@@ -1,0 +1,17 @@
+task: custom_sequence_classification
+
+model:
+    model_id: bert-base-uncased
+    tokenizer_id: bert-base-uncased
+    model_path: /home/chanys/tnlp/expts/restaurant_category
+
+hyperparams:
+    batch_size: 16
+    max_seq_length: 512
+
+processing:
+    output_dir: /home/chanys/tnlp/expts/restaurant_category
+    seed: 42
+
+data:
+    test_jsonl: /home/chanys/tnlp/data/restaurant/validation.jsonl

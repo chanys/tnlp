@@ -1,0 +1,33 @@
+task: instruction_ft
+
+model:
+    model_id: meta-llama/Llama-2-7b-hf
+    tokenizer_id: meta-llama/Llama-2-7b-hf
+
+hyperparams:
+    per_device_eval_batch_size: 16
+    per_device_train_batch_size: 16
+    gradient_accumulation_steps: 1
+    epoch: 1
+    learning_rate: 0.0003
+    warmup_steps: 5
+    save_steps: 10000
+    save_total_limit: 0
+    max_seq_length: 512
+
+lora:
+    r: 8
+    alpha: 16
+    target_modules:
+        - self_attn.q_proj
+        - self_attn.k_proj
+        - self_attn.v_proj
+        - self_attn.o_proj
+    task_type: CAUSAL_LM
+
+processing:
+    output_dir: /home/chanys/tnlp/expts/alpaca_instruction_ft
+    seed: 42
+
+data:
+    train_jsonl: /home/chanys/tnlp/data/alpaca/alpaca_data.json

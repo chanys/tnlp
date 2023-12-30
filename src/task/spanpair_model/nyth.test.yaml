@@ -1,0 +1,20 @@
+task: spanpair_classification
+
+model:
+    model_id: microsoft/deberta-v3-base
+    tokenizer_id: /home/chanys/tnlp/expts/nyth_classification
+    max_seq_length: 256
+    model_path: /home/chanys/tnlp/expts/nyth_classification
+
+hyperparams:
+    batch_size: 16
+    encoder_dropout: 0
+    linear_dropout: 0
+    fcl_hidden_dim: 600
+
+processing:
+    output_dir: /home/chanys/tnlp/expts/nyth_classification
+    seed: 42
+
+data:
+    test_jsonl: /home/chanys/tnlp/data/nyth/dev.jsonl

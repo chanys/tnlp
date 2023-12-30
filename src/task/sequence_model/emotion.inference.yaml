@@ -1,0 +1,11 @@
+task: sequence_classification
+
+model:
+    model_id: /home/chanys/tnlp/expts/emotion_classification/final_model
+    tokenizer_id: /home/chanys/tnlp/expts/emotion_classification/final_model
+
+hyperparams:
+    batch_size: 16
+
+data:
+    inference_jsonl: /home/chanys/tnlp/data/emotion/inference.jsonl

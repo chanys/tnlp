@@ -1,0 +1,26 @@
+task: spanpair_classification
+
+model:
+    model_id: microsoft/deberta-v3-base
+    tokenizer_id: microsoft/deberta-v3-base
+    max_seq_length: 256
+
+hyperparams:
+    batch_size: 16
+    gradient_accumulation_steps: 1
+    epoch: 3
+    learning_rate: 0.00001
+    warmup_steps: 0
+    save_steps: 10000
+    save_total_limit: 0
+    encoder_dropout: 0
+    linear_dropout: 0
+    fcl_hidden_dim: 600
+
+processing:
+    output_dir: /home/chanys/tnlp/expts/nyth_classification
+    seed: 42
+
+data:
+    train_jsonl: /home/chanys/tnlp/data/nyth/train_nonna.sampled.jsonl
+    validation_jsonl: /home/chanys/tnlp/data/nyth/dev.jsonl

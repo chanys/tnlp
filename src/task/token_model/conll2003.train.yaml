@@ -1,0 +1,24 @@
+task: token_classification
+
+model:
+    model_id: microsoft/deberta-v3-base
+    tokenizer_id: microsoft/deberta-v3-base
+
+hyperparams:
+    batch_size: 16
+    gradient_accumulation_steps: 1
+    epoch: 2
+    learning_rate: 0.00001
+    warmup_steps: 0
+    save_steps: 10000
+    save_total_limit: 0
+
+processing:
+    output_dir: /home/chanys/tnlp/expts/conll2003_classification
+    seed: 42
+
+data:
+    train_jsonl: /home/chanys/tnlp/data/conll2003/train.jsonl
+    validation_jsonl: /home/chanys/tnlp/data/conll2003/validation.jsonl
+    test_jsonl: /home/chanys/tnlp/data/conll2003/test.jsonl
+    inference_jsonl: /home/chanys/tnlp/data/conll2003/inference.jsonl

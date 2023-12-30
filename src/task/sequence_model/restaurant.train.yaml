@@ -1,0 +1,20 @@
+task: custom_sequence_classification
+
+model:
+    model_id: bert-base-uncased
+    tokenizer_id: bert-base-uncased
+
+hyperparams:
+    batch_size: 16
+    max_seq_length: 512
+    epoch: 3
+    learning_rate: 0.000005
+    warmup_steps: 0
+
+processing:
+    output_dir: /home/chanys/tnlp/expts/restaurant_category
+    seed: 42
+
+data:
+    train_jsonl: /home/chanys/tnlp/data/restaurant/train.jsonl
+    validation_jsonl: /home/chanys/tnlp/data/restaurant/validation.jsonl

@@ -1,0 +1,20 @@
+task: seq2seq_lm
+
+model:
+    model_id: /home/chanys/tnlp/expts/samsum_summarization/final_model
+    tokenizer_id: /home/chanys/tnlp/expts/samsum_summarization/final_model
+
+hyperparams:
+    batch_size: 16
+    max_context_length: 256
+    max_response_length: 64
+
+processing:
+    seed: 42
+
+data:
+    inference_jsonl: /home/chanys/tnlp/data/samsum/inference.jsonl
+
+prompt:
+    context_prompt: "summarize: {}"
+    response_prompt: "{}"

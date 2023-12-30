@@ -1,0 +1,37 @@
+task: rag_e2e
+
+model:
+    retriever_model_id: intfloat/e5-large-v2
+    retriever_tokenizer_id: intfloat/e5-large-v2
+    generator_model_id: meta-llama/Llama-2-7b-hf
+    generator_tokenizer_id: meta-llama/Llama-2-7b-hf
+
+hyperparams:
+    batch_size: 2
+    gradient_accumulation_steps: 4
+    epoch: 3
+    learning_rate: 0.0005
+    warmup_steps: 0
+    save_steps: 10000
+    save_total_limit: 0
+    query_max_seq_len: 32
+    passage_max_seq_len: 128
+    generator_max_seq_len: 192
+    temperature: 1.0
+
+lora:
+    r: 8
+    alpha: 16
+    target_modules:
+        - q_proj
+        - v_proj
+    task_type: CAUSAL_LM
+
+processing:
+    retriever_output_dir: /home/chanys/tnlp/expts/squad_rag_e2e/retriever
+    generator_output_dir: /home/chanys/tnlp/expts/squad_rag_e2e/generator
+    seed: 42
+
+data:
+    train_jsonl: /home/chanys/tnlp/data/squad/train.jsonl
+

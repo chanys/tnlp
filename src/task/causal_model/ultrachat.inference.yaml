@@ -1,0 +1,24 @@
+task: chat_ft
+
+model:
+    model_id: /home/chanys/tnlp/expts/ultrachat_sft
+    tokenizer_id: /home/chanys/tnlp/expts/ultrachat_sft
+
+hyperparams:
+    per_device_eval_batch_size: 8
+    max_seq_length: 1024
+
+lora:
+    r: 16
+    alpha: 16
+    target_modules:
+        - q_proj
+        - k_proj
+        - v_proj
+        - o_proj
+    task_type: CAUSAL_LM
+
+processing:
+    output_dir: /home/chanys/tnlp/expts/ultrachat_sft
+    seed: 42
+

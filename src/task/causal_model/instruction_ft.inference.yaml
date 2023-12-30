@@ -1,0 +1,14 @@
+task: instruction_ft
+
+model:
+    model_id: /home/chanys/tnlp/expts/alpaca_instruction_ft
+    tokenizer_id: /home/chanys/tnlp/expts/alpaca_instruction_ft
+
+hyperparams:
+    per_device_eval_batch_size: 16
+    max_seq_length: 512
+
+processing:
+    output_dir: /home/chanys/tnlp/expts/alpaca_instruction_ft
+    seed: 42
+

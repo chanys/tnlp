@@ -1,0 +1,15 @@
+task: sentence_contrastive_learning
+
+model:
+    model_id: /home/chanys/tnlp/expts/bioasq_sentence_contrastive
+    max_seq_length: 256
+
+hyperparams:
+    batch_size: 16
+
+processing:
+    output_dir: /home/chanys/tnlp/expts/bioasq_sentence_contrastive
+    seed: 42
+
+data:
+    test_jsonl: /home/chanys/tnlp/data/bioasq/validation.jsonl

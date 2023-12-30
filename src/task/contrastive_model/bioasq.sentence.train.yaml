@@ -1,0 +1,22 @@
+task: sentence_contrastive_learning
+
+model:
+    model_id: intfloat/e5-base-v2
+    max_seq_length: 256
+
+hyperparams:
+    batch_size: 16
+    gradient_accumulation_steps: 1
+    epoch: 3
+    learning_rate: 0.000005
+    warmup_steps: 0
+    save_steps: 10000
+    save_total_limit: 0
+
+processing:
+    output_dir: /home/chanys/tnlp/expts/bioasq_sentence_contrastive
+    seed: 42
+
+data:
+    train_jsonl: /home/chanys/tnlp/data/bioasq/train.jsonl
+    validation_jsonl: /home/chanys/tnlp/data/bioasq/validation.jsonl

@@ -1,0 +1,40 @@
+task: seq2seq_lm
+
+model:
+    model_id: google/flan-t5-base
+    tokenizer_id: google/flan-t5-base
+
+hyperparams:
+    batch_size: 16
+    gradient_accumulation_steps: 1
+    epoch: 5
+    learning_rate: 0.001
+    warmup_steps: 0
+    save_steps: 10000
+    save_total_limit: 0
+    max_context_length: 256
+    max_response_length: 64
+
+lora:
+    r: 8
+    alpha: 16
+    target_modules:
+        - q
+        - v
+    task_type: SEQ_2_SEQ_LM
+
+processing:
+    output_dir: /home/chanys/tnlp/expts/samsum_summarization
+    seed: 42
+
+data:
+    train_jsonl: /home/chanys/tnlp/data/samsum/train.jsonl
+    validation_jsonl: /home/chanys/tnlp/data/samsum/validation.jsonl
+    test_jsonl: /home/chanys/tnlp/data/samsum/test.jsonl
+    inference_jsonl: /home/chanys/tnlp/data/samsum/inference.jsonl
+
+prompt:
+    context_prompt: "summarize: {}"
+    response_prompt: "{}"
+ 
+
