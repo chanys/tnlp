@@ -124,9 +124,9 @@ python src/scripts/run_model.py --params src/task/sequence_model/emotion.inferen
 
 Sometimes we might want to use our own custom class that subclasses `Dataset`,
 or our own training code instead of using [Trainer](https://huggingface.co/docs/transformers/main_classes/trainer#trainer). The following python scripts illustrate this:
-* `src.model.sequence_model.custom_sequence_classification.py`
-* `src.model.sequence_model.custom_sequence_model.py`
-* `src.data.span_dataset.py`
+* [src.model.sequence_model.custom_sequence_classification.py](https://github.com/chanys/tnlp/blob/main/src/model/sequence_model/custom_sequence_classification.py)
+* [src.model.sequence_model.custom_sequence_model.py](https://github.com/chanys/tnlp/blob/main/src/model/sequence_model/custom_sequence_model.py)
+* [src.data.span_dataset.py](https://github.com/chanys/tnlp/blob/main/src/data/span_dataset.py)
 
 Example use case:
 * Classify a restaurant review text into one of the following categories: `business`, `family`, or `romantic`. 
@@ -135,8 +135,8 @@ Subsequently, I collected 15 reviews for each restaurant.
 
 Modeling:
 * Classification model: a custom `CustomSequenceModel` class which internally uses [AutoModelForSequenceClassification](https://huggingface.co/docs/transformers/model_doc/auto#transformers.AutoModelForSequenceClassification) as encoder.
-* Trainer: custom training code in `custom_sequence_model.py`.
-* Data class: a custom `SpanDataset` class defined in `span_dataset.py` that subclasses [Dataset](https://pytorch.org/docs/stable/data.html#torch.utils.data.Dataset).
+* Trainer: custom training code in [custom_sequence_model.py]((https://github.com/chanys/tnlp/blob/main/src/model/sequence_model/custom_sequence_model.py)).
+* Data class: a custom `SpanDataset` class defined in [span_dataset.py]((https://github.com/chanys/tnlp/blob/main/src/data/span_dataset.py)) that subclasses [Dataset](https://pytorch.org/docs/stable/data.html#torch.utils.data.Dataset).
 
 Commands for train, test: 
 ```
@@ -168,8 +168,8 @@ python src/scripts/run_model.py --params src/task/token_model/conll2003.inferenc
 
 Given a pair of text spans, I want to average their embeddings, then put through linear classification layers.
 The following custom code achieves this:
-* `src.model.spanpair_model.custom_spanpair_classification.py`
-* `src.model.spanpair_model.custom_spanpair_model.py`
+* [src.model.spanpair_model.custom_spanpair_classification.py](https://github.com/chanys/tnlp/blob/main/src/model/spanpair_model/custom_spanpair_classification.py)
+* [src.model.spanpair_model.custom_spanpair_model.py](https://github.com/chanys/tnlp/blob/main/src/model/spanpair_model/custom_spanpair_model.py)
 
 Example use case:
 * Relation extraction.
@@ -179,12 +179,12 @@ identify a `nationality` relation label.
 "Towards Accurate and Consistent Evaluation: A Dataset for Distantly-Supervised Relation Extraction" by Zhu et. al. (2020).
 
 Modeling:
-* Classification model: a custom `CustomSpanPairModel` defined in `custom_spanpair_model.py`.
+* Classification model: a custom `CustomSpanPairModel` defined in [custom_spanpair_model.py](https://github.com/chanys/tnlp/blob/main/src/model/spanpair_model/custom_spanpair_model.py).
 Internally, we used [AutoModel](https://huggingface.co/transformers/v3.0.2/model_doc/auto.html#automodel) to encode a piece of text.
 When given two predetermined spans within the given text, we first extract their associated span embeddings. 
 If a span consists of multiple subword tokens, we take the mean of the subword embeddings.
 Then, the two span embeddings are aggregated together and put through linear layers for classification.
-* Trainer: custom training code in `custom_spanpair_classification.py`.
+* Trainer: custom training code in [custom_spanpair_classification.py]((https://github.com/chanys/tnlp/blob/main/src/model/spanpair_model/custom_spanpair_classification.py)).
 
 Commands for train, test:
 ```
@@ -244,8 +244,8 @@ python src/scripts/run_model.py --params src/task/contrastive_model/bioasq.sente
 
 Instead of using Sentence Transformers, we might want to create custom code to perform contrastive modeling.
 The following custom code achieves this:
-* `src.model.contrastive_model.custom_triplet_contrastive_learning.py`
-* `src.model.contrastive_model.custom_triplet_contrastive_model.py`
+* [src.model.contrastive_model.custom_triplet_contrastive_learning.py](https://github.com/chanys/tnlp/blob/main/src/model/contrastive_model/custom_triplet_contrastive_learning.py)
+* [src.model.contrastive_model.custom_triplet_contrastive_model.py](https://github.com/chanys/tnlp/blob/main/src/model/contrastive_model/custom_triplet_contrastive_model.py)
 
 I also coded a custom `CustomTripletContrastiveModel` class. 
 
@@ -256,13 +256,13 @@ and a single "ideal answer".
 We use the question, "ideal answer", and candidate snippets as `query`, `chosen`, and `rejected` respectively.
 
 Modeling:
-* Model: a custom `CustomTripletContrastiveModel` defined in `custom_triplet_contrastive_model.py`.
+* Model: a custom `CustomTripletContrastiveModel` defined in [custom_triplet_contrastive_model.py](https://github.com/chanys/tnlp/blob/main/src/model/contrastive_model/custom_triplet_contrastive_model.py).
 Internally, this uses [AutoModel](https://huggingface.co/transformers/v3.0.2/model_doc/auto.html#automodel)
 to encode the `anchor`, `chosen`, and `rejected`. I then take their first subword embedding (`[CLS]` token), 
 put them through a fully connected linear layer, then use `1 - cosine_similarity` as the distance metric
 between the (`anchor`, `chosen`) and between the (`anchor`, `rejected`).
-* Trainer: custom training code in `custom_triplet_contrastive_learning.py`.
-* Data class: a custom `TripletDataset` class in `triplet_dataset.py` that subclasses [Dataset](https://pytorch.org/docs/stable/data.html#torch.utils.data.Dataset).
+* Trainer: custom training code in [custom_triplet_contrastive_learning.py]((https://github.com/chanys/tnlp/blob/main/src/model/contrastive_model/custom_triplet_contrastive_learning.py)).
+* Data class: a custom `TripletDataset` class in [triplet_dataset.py](https://github.com/chanys/tnlp/blob/main/src/data/triplet_dataset.py) that subclasses [Dataset](https://pytorch.org/docs/stable/data.html#torch.utils.data.Dataset).
 
 Command for train:
 ```
@@ -289,7 +289,7 @@ Some example instruction following datapoints are:
     ```
 
 Modeling:
-* Model: The class `InstructionFineTuneLM` defined in `src.model.causal_model.instruction_ft.py`
+* Model: The class `InstructionFineTuneLM` defined in [src.model.causal_model.instruction_ft.py](https://github.com/chanys/tnlp/blob/main/src/model/causal_model/instruction_ft.py)
 internally uses [AutoModelForCausalLM](https://huggingface.co/docs/transformers/model_doc/auto#transformers.AutoModelForCausalLM) and uses [meta-llama/Llama-2-7b-hf](https://huggingface.co/meta-llama/Llama-2-7b-hf).
 * Efficiency: the code loads the LLM in 8-bits and also leveraged LoRA from [PEFT](https://github.com/huggingface/peft).
 
@@ -308,7 +308,7 @@ Example use case:
 * Dataset used for fine-tuning is the [HuggingFaceH4/ultrachat_200k](https://huggingface.co/datasets/HuggingFaceH4/ultrachat_200k).
 
 Modeling:
-* The class `ChatFineTuneLM` defined in `src.model.causal_model.chat_ft.py`.
+* The class `ChatFineTuneLM` defined in [src.model.causal_model.chat_ft.py](https://github.com/chanys/tnlp/blob/main/src/model/causal_model/chat_ft.py).
 * Trainer: [SFTTrainer](https://huggingface.co/docs/trl/sft_trainer) for training
 * Efficiency: uses qLoRA.
 
@@ -325,7 +325,7 @@ Example use case:
 * Dataset used is the [HuggingFaceH4/ultrafeedback_binarized](https://huggingface.co/datasets/HuggingFaceH4/ultrafeedback_binarized).
 
 Modeling:
-* The class `DPOFineTuneLM` defined in `src.model.causal_model.dpo_ft.py`.
+* The class `DPOFineTuneLM` defined in [src.model.causal_model.dpo_ft.py](https://github.com/chanys/tnlp/blob/main/src/model/causal_model/dpo_ft.py).
 * Trainer: [DPOTrainer](https://huggingface.co/docs/trl/main/en/dpo_trainer) for training
 * Efficiency: uses qLoRA.
 
@@ -344,12 +344,12 @@ Example use case:
 - The data is [SQUAD-v2](https://huggingface.co/datasets/squad_v2).
 
 Modeling:
-* Retriever model: [AutoModel](https://huggingface.co/docs/transformers/v4.36.1/en/model_doc/auto#transformers.AutoModel) using [intfloat/e5-large-v2](https://huggingface.co/intfloat/e5-large-v2). 
+* Retriever model: [AutoModel](https://huggingface.co/docs/transformers/v4.36.1/en/model_doc/auto#transformers.AutoModel) using [intfloat/e5-large-v2](https://huggingface.co/intfloat/e5-large-v2), in [rag_e2e_model.py](https://github.com/chanys/tnlp/blob/main/src/model/rag_model/rag_e2e_model.py).
 Using (query, candidate passage) pairs for training retriever.
-* Generator model: [AutoModelForCausalLM](https://huggingface.co/docs/transformers/model_doc/auto#transformers.AutoModelForCausalLM) using [meta-llama/Llama-2-7b-hf](https://huggingface.co/meta-llama/Llama-2-7b-hf). 
+* Generator model: [AutoModelForCausalLM](https://huggingface.co/docs/transformers/model_doc/auto#transformers.AutoModelForCausalLM) using [meta-llama/Llama-2-7b-hf](https://huggingface.co/meta-llama/Llama-2-7b-hf), in [rag_e2e_model.py](https://github.com/chanys/tnlp/blob/main/src/model/rag_model/rag_e2e_model.py).
 Generator's task is to predict answer given (query, passage).
-* Training: custom training code that combines the loss from retriever and generator.
-* Data class: a custom `RagDataset` defined in `src.data.rag_dataset.py` to manage examples.
+* Training: custom training code in [rag_e2e_learning.py](https://github.com/chanys/tnlp/blob/main/src/model/rag_model/rag_e2e_learning.py) that combines the loss from retriever and generator.
+* Data class: a custom `RagDataset` defined in [src.data.rag_dataset.py](https://github.com/chanys/tnlp/blob/main/src/data/rag_dataset.py) to manage examples.
 
 Command for train:
 ```
