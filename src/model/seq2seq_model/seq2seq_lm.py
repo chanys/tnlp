@@ -3,18 +3,20 @@ import logging
 
 import torch
 import numpy as np
+from torch.utils.data import DataLoader
 
 from tqdm import tqdm
 from transformers import (
     AutoTokenizer,
     AutoModelForSeq2SeqLM,
     DataCollatorForSeq2Seq, Seq2SeqTrainingArguments, Seq2SeqTrainer,
-    set_seed
+    set_seed, default_data_collator
 )
 from peft import get_peft_model, prepare_model_for_int8_training, PeftModel, PeftConfig
 
-from src.data.data_utils import read_token_examples_from_file, read_seq2seq_examples_from_file
-from src.model.metric import compute_seqeval_metric
+from src.model.seq2seq_model.seq2seq_utils import read_token_examples_to_seq2seq, parse_output_to_entities, \
+    align_sequences, EntityOutput
+from src.data.data_utils import read_seq2seq_examples_from_file
 from src.model.model_utils import get_lora_config
 
 import evaluate
@@ -51,6 +53,10 @@ class Seq2SeqLM(object):
         self.response_prompt = response_prompt
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         set_seed(self.config.processing.seed) if hasattr(self.config.processing, "seed") else set_seed(42)
+        if self.config.task == "seq2seq_ner":
+            self.clean_up_tokenization_spaces = False
+        else:
+            self.clean_up_tokenization_spaces = True
 
     def predict_batch(self, batch, tokenizer, model):
         inputs = tokenizer(
@@ -93,6 +99,12 @@ class Seq2SeqLM(object):
 
         return {"tokens": batch["tokens"], "labels": batch_labels}
 
+    def read_examples(self, json_file):
+        if self.config.task == "seq2seq_ner":
+            return read_token_examples_to_seq2seq(json_file)  # this reads CoNLL BIO examples to seq2seq format
+        else:
+            return read_seq2seq_examples_from_file(json_file)
+
     def inference(self):
         peft_config = PeftConfig.from_pretrained(self.config.model.model_id)
 
@@ -107,18 +119,91 @@ class Seq2SeqLM(object):
                      "max_response_length": self.config.hyperparams.max_response_length,
                      "context_prompt": self.context_prompt, "response_prompt": self.response_prompt}
 
-        ds = read_seq2seq_examples_from_file(self.config.data.inference_jsonl)
+        ds = self.read_examples(self.config.data.inference_jsonl)
         ds_tokenized = ds.map(tokenize_context_response, fn_kwargs=fn_kwargs, batched=True,
                               batch_size=self.config.hyperparams.batch_size)
 
+        dataloader = DataLoader(
+            ds_tokenized,
+            batch_size=self.config.hyperparams.batch_size,
+            shuffle=False,
+            collate_fn=default_data_collator,
+        )
+
         predictions = []
-        for sample in tqdm(ds_tokenized):
-            outputs = model.generate(input_ids=torch.tensor(sample["input_ids"]).unsqueeze(0).cuda(), do_sample=True,
-                                     top_p=0.9, max_new_tokens=self.config.hyperparams.max_response_length)
-            prediction = tokenizer.decode(outputs[0].detach().cpu().numpy(), skip_special_tokens=True)
-            predictions.append(prediction)
+        with torch.no_grad():
+            for batch in tqdm(dataloader, disable=False):
+                outputs = model.generate(input_ids=torch.tensor(batch["input_ids"]).to(self.device),
+                                         do_sample=True,
+                                         top_p=0.9, max_new_tokens=self.config.hyperparams.max_response_length)
+
+                for prediction in outputs:
+                    prediction = tokenizer.decode(prediction.detach().cpu().numpy(), skip_special_tokens=True,
+                                                  clean_up_tokenization_spaces=self.clean_up_tokenization_spaces)
+                    predictions.append(prediction)
 
         return ds["context"], predictions
+
+    def _compute_score(self, predictions, references):
+        if self.config.task == "seq2seq_ner":  # augmented output
+
+            print(f"len(predictions)={len(predictions)}")
+            print(f"len(references)={len(references)}")
+
+            reference_count = 0
+            predicted_count = 0
+            common_count = 0
+            for prediction, reference in zip(predictions, references):
+                predicted_entities, predicted_tokens = parse_output_to_entities(prediction)
+
+                reference_entities, reference_tokens = parse_output_to_entities(reference)
+
+                print(f"prediction={prediction}, len(predicted_entities)={len(predicted_entities)}")
+                for e in predicted_entities:
+                    print(e)
+
+                reference_set = set()
+                for entity in reference_entities:
+                    reference_set.add((entity.start, entity.end, " ".join(entity.labels)))
+
+                token_matches = align_sequences(reference_tokens, predicted_tokens)
+
+                predicted_set = set()
+                print("len(predicted_set)=", len(predicted_set))
+                for entity in predicted_entities:
+                    new_start = None
+                    new_end = None
+
+                    for j in range(entity.start, entity.end + 1):
+                        if j in token_matches:
+                            if new_start is None:
+                                new_start = token_matches[j]
+                            new_end = token_matches[j]
+
+                    if new_start is not None and new_end is not None:
+                        predicted_set.add((new_start, new_end, " ".join(entity.labels)))
+
+                common_count += len(reference_set.intersection(predicted_set))
+                reference_count += len(reference_set)
+                predicted_count += len(predicted_set)
+                print(f"predicted_count={predicted_count}")
+
+            precision = float(common_count) / predicted_count if predicted_count != 0 else 0.0
+            recall = float(common_count) / reference_count if reference_count != 0 else 0.0
+            if precision > 0 and recall > 0:
+                f1 = (2 * precision * recall) / (precision + recall)
+            else:
+                f1 = 0
+
+            print(f"common_count={common_count} predicted_count={predicted_count} reference_count={reference_count}")
+            print(f"F1/P/R={f1:.3f}/{precision:.3f}/{recall:.3f}")
+
+        else:  # raw text output
+            rogue = metric.compute(predictions=predictions, references=references, use_stemmer=True)
+            print(f"Rogue1: {rogue['rouge1'] * 100:2f}%")
+            print(f"rouge2: {rogue['rouge2'] * 100:2f}%")
+            print(f"rougeL: {rogue['rougeL'] * 100:2f}%")
+            print(f"rougeLsum: {rogue['rougeLsum'] * 100:2f}%")
 
     def test(self):
         peft_config = PeftConfig.from_pretrained(self.config.model.model_id)
@@ -134,32 +219,51 @@ class Seq2SeqLM(object):
                      "max_response_length": self.config.hyperparams.max_response_length,
                      "context_prompt": self.context_prompt, "response_prompt": self.response_prompt}
 
-        ds_test = read_seq2seq_examples_from_file(self.config.data.test_jsonl)
+        ds_test = self.read_examples(self.config.data.test_jsonl)
         ds_test_tokenized = ds_test.map(tokenize_context_response, fn_kwargs=fn_kwargs, batched=True,
                                         batch_size=self.config.hyperparams.batch_size)
 
+        test_dataloader = DataLoader(
+            ds_test_tokenized,
+            batch_size=self.config.hyperparams.batch_size,
+            shuffle=False,
+            collate_fn=default_data_collator,
+        )
+
         predictions, references = [], []
-        for sample in tqdm(ds_test_tokenized):
-            # generate summary. unsqueeze(0): add an extra dimension to the tensor
-            outputs = model.generate(input_ids=torch.tensor(sample["input_ids"]).unsqueeze(0).cuda(), do_sample=True,
-                                     top_p=0.9, max_new_tokens=self.config.hyperparams.max_response_length)
-            prediction = tokenizer.decode(outputs[0].detach().cpu().numpy(), skip_special_tokens=True)
+        with torch.no_grad():
+            for batch in tqdm(test_dataloader, disable=False):
+                outputs = model.generate(input_ids=torch.tensor(batch["input_ids"]).to(self.device),
+                                         do_sample=True,
+                                         top_p=0.9, max_new_tokens=self.config.hyperparams.max_response_length)
 
-            # np.where(condition, x, y): if condition==True, do x, else do y
-            labels = np.where(torch.tensor(sample['labels']) != -100, sample['labels'], tokenizer.pad_token_id)
-            labels = tokenizer.decode(labels, skip_special_tokens=True)
+                for j, (input_ids, label_ids, prediction) in enumerate(
+                        zip(batch['input_ids'], batch['labels'], outputs)):
+                    prediction = tokenizer.decode(prediction.detach().cpu().numpy(), skip_special_tokens=True,
+                                                  clean_up_tokenization_spaces=self.clean_up_tokenization_spaces)
+                    # np.where(condition, x, y): if condition==True, do x, else do y
+                    labels = np.where(torch.tensor(label_ids) != -100, label_ids, tokenizer.pad_token_id)
+                    labels = tokenizer.decode(labels, skip_special_tokens=True,
+                                              clean_up_tokenization_spaces=self.clean_up_tokenization_spaces)
 
-            predictions.append(prediction)
-            references.append(labels)
+                    predictions.append(prediction)
+                    references.append(labels)
 
-        # compute metric
-        rogue = metric.compute(predictions=predictions, references=references, use_stemmer=True)
+            # following is when doing this one by one
+            # for sample in tqdm(ds_test_tokenized):
+            #     # generate summary. unsqueeze(0): add an extra dimension to the tensor
+            #     outputs = model.generate(input_ids=torch.tensor(sample["input_ids"]).unsqueeze(0).cuda(), do_sample=True,
+            #                              top_p=0.9, max_new_tokens=self.config.hyperparams.max_response_length)
+            #     prediction = tokenizer.decode(outputs[0].detach().cpu().numpy(), skip_special_tokens=True, clean_up_tokenization_spaces=self.clean_up_tokenization_spaces)
+            #
+            #     # np.where(condition, x, y): if condition==True, do x, else do y
+            #     labels = np.where(torch.tensor(sample['labels']) != -100, sample['labels'], tokenizer.pad_token_id)
+            #     labels = tokenizer.decode(labels, skip_special_tokens=True, clean_up_tokenization_spaces=self.clean_up_tokenization_spaces)
+            #
+            #     predictions.append(prediction)
+            #     references.append(labels)
 
-        # print results
-        print(f"Rogue1: {rogue['rouge1'] * 100:2f}%")
-        print(f"rouge2: {rogue['rouge2'] * 100:2f}%")
-        print(f"rougeL: {rogue['rougeL'] * 100:2f}%")
-        print(f"rougeLsum: {rogue['rougeLsum'] * 100:2f}%")
+        self._compute_score(predictions, references)
 
     def train(self):
         tokenizer = AutoTokenizer.from_pretrained(self.config.model.tokenizer_id)
@@ -168,11 +272,11 @@ class Seq2SeqLM(object):
                      "max_response_length": self.config.hyperparams.max_response_length,
                      "context_prompt": self.context_prompt, "response_prompt": self.response_prompt}
 
-        ds_train = read_seq2seq_examples_from_file(self.config.data.train_jsonl)
+        ds_train = self.read_examples(self.config.data.train_jsonl)
         ds_train_tokenized = ds_train.map(tokenize_context_response, fn_kwargs=fn_kwargs, batched=True,
                                           batch_size=self.config.hyperparams.batch_size)
 
-        ds_validation = read_seq2seq_examples_from_file(self.config.data.validation_jsonl)
+        ds_validation = self.read_examples(self.config.data.validation_jsonl)
         ds_validation_tokenized = ds_validation.map(tokenize_context_response, fn_kwargs=fn_kwargs, batched=True,
                                                     batch_size=self.config.hyperparams.batch_size)
 
@@ -219,6 +323,7 @@ class Seq2SeqLM(object):
             data_collator=data_collator,
             train_dataset=ds_train_tokenized,
             eval_dataset=ds_validation_tokenized,
+            #compute_metrics=lambda pred: self.compute_metrics_for_eval(pred)
         )
 
         # In model inference, e.g. auto-regressive inference/generation, once you generate the hidden states

@@ -193,7 +193,7 @@ python src/scripts/run_model.py --params src/task/spanpair_model/nyth.test.yaml 
 ```
 
 
-### Sequence to Sequence
+### Sequence to Sequence (summarization)
 
 Example use case:
 * Given a dialogue conversation, generate the summary.
@@ -211,6 +211,38 @@ Commands for train, test, inference:
 python src/scripts/run_model.py --params src/task/seq2seq_model/summarization.train.yaml --mode train
 python src/scripts/run_model.py --params src/task/seq2seq_model/summarization.test.yaml --mode test
 python src/scripts/run_model.py --params src/task/seq2seq_model/summarization.inference.yaml --mode inference
+```
+
+
+### Sequence to Sequence (named entity recognition)
+
+Instead of using token classification to tackle named entity recognition (NER), we can also use sequence to sequence.
+Given an input sentence with its associated BIO tags, we:
+* Designate the input sentence as the input "context" to the seq2seq model.
+* Augment the input sentence with the NER tags, to serve as the output "response" to the seq2seq model, like so:
+```
+[ Japan | LOC ] began the defence of their [ Asian Cup | MISC ] title with a lucky 2-1 win against [ Syria | LOC ] in a Group C championship match on Friday .
+```
+
+Sequence to sequence is useful for NER, when we are dealing with overlapping NER spans (where one span might contain another).
+The current implementation in `src.model.seq2seq_model.seq2seq_utils.py` allow for this.
+Annotations where one span partially overlap with another is a future work.
+
+Example use case:
+* Given an input sentence, perform NER.
+* The data is the [conll2003](https://huggingface.co/datasets/conll2003) dataset. 
+
+Modeling:
+* Seq2seq model: [AutoModelForSeq2SeqLM](https://huggingface.co/docs/transformers/model_doc/auto#transformers.AutoModelForSeq2SeqLM),
+where we used [google/flan-t5-base](https://huggingface.co/google/flan-t5-base)
+* Trainer: [Seq2SeqTrainer](https://huggingface.co/docs/transformers/main_classes/trainer#transformers.Seq2SeqTrainer)
+* Efficiency: the code loads T5 in 8-bits and also leveraged LoRA from [PEFT](https://github.com/huggingface/peft).
+
+Commands for train, test, inference:
+```
+python src/scripts/run_model.py --params src/task/seq2seq_model/ner.train.yaml --mode train
+python src/scripts/run_model.py --params src/task/seq2seq_model/ner.test.yaml --mode test
+python src/scripts/run_model.py --params src/task/seq2seq_model/ner.inference.yaml --mode inference
 ```
 
 

@@ -30,6 +30,9 @@ if __name__ == "__main__":
     elif config.task == "seq2seq_lm":
         from src.model.seq2seq_model.seq2seq_lm import Seq2SeqLM
         task = Seq2SeqLM(config, config.prompt.context_prompt, config.prompt.response_prompt)
+    elif config.task == "seq2seq_ner":
+        from src.model.seq2seq_model.seq2seq_lm import Seq2SeqLM
+        task = Seq2SeqLM(config, config.prompt.context_prompt, config.prompt.response_prompt)
     elif config.task == "chat_ft":
         from src.model.causal_model.chat_ft import ChatFineTuneLM
         task = ChatFineTuneLM(config)
