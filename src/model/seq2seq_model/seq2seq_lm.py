@@ -147,9 +147,6 @@ class Seq2SeqLM(object):
     def _compute_score(self, predictions, references):
         if self.config.task == "seq2seq_ner":  # augmented output
 
-            print(f"len(predictions)={len(predictions)}")
-            print(f"len(references)={len(references)}")
-
             reference_count = 0
             predicted_count = 0
             common_count = 0
@@ -158,10 +155,6 @@ class Seq2SeqLM(object):
 
                 reference_entities, reference_tokens = parse_output_to_entities(reference)
 
-                print(f"prediction={prediction}, len(predicted_entities)={len(predicted_entities)}")
-                for e in predicted_entities:
-                    print(e)
-
                 reference_set = set()
                 for entity in reference_entities:
                     reference_set.add((entity.start, entity.end, " ".join(entity.labels)))
@@ -169,7 +162,6 @@ class Seq2SeqLM(object):
                 token_matches = align_sequences(reference_tokens, predicted_tokens)
 
                 predicted_set = set()
-                print("len(predicted_set)=", len(predicted_set))
                 for entity in predicted_entities:
                     new_start = None
                     new_end = None
@@ -186,7 +178,6 @@ class Seq2SeqLM(object):
                 common_count += len(reference_set.intersection(predicted_set))
                 reference_count += len(reference_set)
                 predicted_count += len(predicted_set)
-                print(f"predicted_count={predicted_count}")
 
             precision = float(common_count) / predicted_count if predicted_count != 0 else 0.0
             recall = float(common_count) / reference_count if reference_count != 0 else 0.0
