@@ -57,10 +57,10 @@ The following Table summarizes the classes and example use cases for each task.
 
 The main packages and directories in this repository are outlined below:
 * `src.model`: This directory encompasses the modeling code for various model types, each residing in its own sub-directory.
-* `src.task`: To demonstrate the codebase's applicability to different tasks, each task is accompanied by one or more use cases. 
-The `src.task` package contains `.yaml` files for each task and its corresponding example use case. 
+* `src.config`: To demonstrate the codebase's applicability to different tasks, each task is accompanied by one or more use cases. 
+The `src.config` package contains `.yaml` files for each task and its corresponding example use case. 
 For instance, the "emotion" dataset is employed to exemplify the "sequence classification" task, 
-resulting in the `emotion.(train|test|inference).yaml` files within the `src.task.sequence_model` directory.
+resulting in the `emotion.(train|test|inference).yaml` files within the `src.config.sequence_model` directory.
 * `src.data`: Custom classes, which are subclasses of `torch.utils.data.Dataset`, are implemented for certain tasks within this package.
 * `src.scripts`: The main entry point for training, testing, and running inference for different tasks is the `run_model.py` script.
 Additionally, the `run_convert_dataset.py` script is employed to transform Hugging Face datasets or raw data files
@@ -114,9 +114,9 @@ Modeling:
 
 Commands for train, test, inference:
 ```
-python src/scripts/run_model.py --params src/task/sequence_model/emotion.train.yaml --mode train
-python src/scripts/run_model.py --params src/task/sequence_model/emotion.test.yaml --mode test
-python src/scripts/run_model.py --params src/task/sequence_model/emotion.inference.yaml --mode inference
+python src/scripts/run_model.py --params src/config/sequence_model/emotion.train.yaml --mode train
+python src/scripts/run_model.py --params src/config/sequence_model/emotion.test.yaml --mode test
+python src/scripts/run_model.py --params src/config/sequence_model/emotion.inference.yaml --mode inference
 ```
 
 
@@ -140,8 +140,8 @@ Modeling:
 
 Commands for train, test: 
 ```
-python src/scripts/run_model.py --params src/task/sequence_model/restaurant.train.yaml --mode train
-python src/scripts/run_model.py --params src/task/sequence_model/restaurant.test.yaml --mode test
+python src/scripts/run_model.py --params src/config/sequence_model/restaurant.train.yaml --mode train
+python src/scripts/run_model.py --params src/config/sequence_model/restaurant.test.yaml --mode test
 ```
 
 
@@ -158,9 +158,9 @@ Modeling:
 
 Commands for train, test, inference:
 ```
-python src/scripts/run_model.py --params src/task/token_model/conll2003.train.yaml --mode train
-python src/scripts/run_model.py --params src/task/token_model/conll2003.test.yaml --mode test
-python src/scripts/run_model.py --params src/task/token_model/conll2003.inference.yaml --mode inference
+python src/scripts/run_model.py --params src/config/token_model/conll2003.train.yaml --mode train
+python src/scripts/run_model.py --params src/config/token_model/conll2003.test.yaml --mode test
+python src/scripts/run_model.py --params src/config/token_model/conll2003.inference.yaml --mode inference
 ```
 
 
@@ -188,8 +188,8 @@ Then, the two span embeddings are aggregated together and put through linear lay
 
 Commands for train, test:
 ```
-python src/scripts/run_model.py --params src/task/spanpair_model/nyth.train.yaml --mode train
-python src/scripts/run_model.py --params src/task/spanpair_model/nyth.test.yaml --mode test
+python src/scripts/run_model.py --params src/config/spanpair_model/nyth.train.yaml --mode train
+python src/scripts/run_model.py --params src/config/spanpair_model/nyth.test.yaml --mode test
 ```
 
 
@@ -208,9 +208,9 @@ where we used [google/flan-t5-base](https://huggingface.co/google/flan-t5-base)
 
 Commands for train, test, inference:
 ```
-python src/scripts/run_model.py --params src/task/seq2seq_model/summarization.train.yaml --mode train
-python src/scripts/run_model.py --params src/task/seq2seq_model/summarization.test.yaml --mode test
-python src/scripts/run_model.py --params src/task/seq2seq_model/summarization.inference.yaml --mode inference
+python src/scripts/run_model.py --params src/config/seq2seq_model/summarization.train.yaml --mode train
+python src/scripts/run_model.py --params src/config/seq2seq_model/summarization.test.yaml --mode test
+python src/scripts/run_model.py --params src/config/seq2seq_model/summarization.inference.yaml --mode inference
 ```
 
 
@@ -240,9 +240,9 @@ where we used [google/flan-t5-base](https://huggingface.co/google/flan-t5-base)
 
 Commands for train, test, inference:
 ```
-python src/scripts/run_model.py --params src/task/seq2seq_model/ner.train.yaml --mode train
-python src/scripts/run_model.py --params src/task/seq2seq_model/ner.test.yaml --mode test
-python src/scripts/run_model.py --params src/task/seq2seq_model/ner.inference.yaml --mode inference
+python src/scripts/run_model.py --params src/config/seq2seq_model/ner.train.yaml --mode train
+python src/scripts/run_model.py --params src/config/seq2seq_model/ner.test.yaml --mode test
+python src/scripts/run_model.py --params src/config/seq2seq_model/ner.inference.yaml --mode inference
 ```
 
 
@@ -267,8 +267,8 @@ Using the BioASQ data, we define `query`, `chosen`, and `rejected` as the `ancho
 
 Commands for train and test:
 ```
-python src/scripts/run_model.py --params src/task/contrastive_model/bioasq.sentence.train.yaml --mode train
-python src/scripts/run_model.py --params src/task/contrastive_model/bioasq.sentence.test.yaml --mode test
+python src/scripts/run_model.py --params src/config/contrastive_model/bioasq.sentence.train.yaml --mode train
+python src/scripts/run_model.py --params src/config/contrastive_model/bioasq.sentence.test.yaml --mode test
 ```
 
 
@@ -298,7 +298,7 @@ between the (`anchor`, `chosen`) and between the (`anchor`, `rejected`).
 
 Command for train:
 ```
-python src/scripts/run_model.py --params src/task/contrastive_model/bioasq.triplet.train.yaml --mode train
+python src/scripts/run_model.py --params src/config/contrastive_model/bioasq.triplet.train.yaml --mode train
 ```
 
 
@@ -327,8 +327,8 @@ internally uses [AutoModelForCausalLM](https://huggingface.co/docs/transformers/
 
 Command for train, inference:
 ```
-python src/scripts/run_model.py --params src/task/causal_model/instruction_ft.train.yaml --mode train
-python src/scripts/run_model.py --params src/task/causal_model/instruction_ft.inference.yaml --mode inference
+python src/scripts/run_model.py --params src/config/causal_model/instruction_ft.train.yaml --mode train
+python src/scripts/run_model.py --params src/config/causal_model/instruction_ft.inference.yaml --mode inference
 ```
 
 
@@ -346,8 +346,8 @@ Modeling:
 
 Command for train, inference:
 ```
-python src/scripts/run_model.py --params src/task/causal_model/ultrachat.train.yaml --mode train
-python src/scripts/run_model.py --params src/task/causal_model/ultrachat.inference.yaml --mode inference
+python src/scripts/run_model.py --params src/config/causal_model/ultrachat.train.yaml --mode train
+python src/scripts/run_model.py --params src/config/causal_model/ultrachat.inference.yaml --mode inference
 ```
 
 ### Direct Preference Optimization (DPO)
@@ -363,8 +363,8 @@ Modeling:
 
 Command for train, inference:
 ```
-python src/scripts/run_model.py --params src/task/causal_model/ultrafeedback.train.yaml --mode train
-python src/scripts/run_model.py --params src/task/causal_model/ultrafeedback.inference.yaml --mode inference
+python src/scripts/run_model.py --params src/config/causal_model/ultrafeedback.train.yaml --mode train
+python src/scripts/run_model.py --params src/config/causal_model/ultrafeedback.inference.yaml --mode inference
 ```
 
 
@@ -385,5 +385,5 @@ Generator's task is to predict answer given (query, passage).
 
 Command for train:
 ```
-python src/scripts/run_model.py --params src/task/rag_model/squad.train.yaml --mode train
+python src/scripts/run_model.py --params src/config/rag_model/squad.train.yaml --mode train
 ```
