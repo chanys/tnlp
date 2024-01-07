@@ -77,7 +77,7 @@ def marginalize_log_probs(
 
 
 def calculate_marginalized_generator_loss(
-    generator_logits: torch.LongTensor,  # [batch_size, generator_max_seq_length, vocab_size]
+    generator_logits: torch.LongTensor,  # [batch_size, max_generator_length, vocab_size]
     input_ids: torch.Tensor,  # generator_input_input_ids ; shape=[batch_size, max_seq_len]
     attention_mask: torch.Tensor,  # generator_input_attention_mask ; shape=[batch_size, max_seq_len]
     cosine_logits: torch.Tensor,  # cosine similarity logits of (query, passage) ; shape=(num# query, num# passage), and we assume query and passage come in pairs
@@ -130,7 +130,7 @@ def calculate_marginalized_generator_loss(
 
 
 def calculate_generator_loss(
-        generator_logits: torch.LongTensor,  # [batch_size, generator_max_seq_length, vocab_size]
+        generator_logits: torch.LongTensor,  # [batch_size, max_generator_length, vocab_size]
         input_ids: torch.Tensor,  # generator_input_input_ids ; shape=[batch_size, max_seq_len]
         attention_mask: torch.Tensor,  # generator_input_attention_mask ; shape=[batch_size, max_seq_len]
 ) -> torch.Tensor:

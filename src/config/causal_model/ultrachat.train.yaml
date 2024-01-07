@@ -26,12 +26,12 @@ lora:
     task_type: CAUSAL_LM
 
 processing:
-    output_dir: /home/chanys/tnlp/expts/ultrachat_sft
-    merged_model_output_dir: /home/chanys/tnlp/expts/ultrachat_merged_model
+    output_dir: BASE_DIR/expts/ultrachat_sft
+    merged_model_output_dir: BASE_DIR/expts/ultrachat_merged_model
     seed: 42
 
 data:
-    train_jsonl: /home/chanys/tnlp/data/ultrachat/train_sft.jsonl
-    validation_jsonl: /home/chanys/tnlp/data/ultrachat/test_sft.jsonl
-    test_jsonl: /home/chanys/tnlp/data/ultrachat/test_sft.jsonl
+    train_jsonl: BASE_DIR/data/ultrachat/train_sft.jsonl
+    validation_jsonl: BASE_DIR/data/ultrachat/test_sft.jsonl
+    test_jsonl: BASE_DIR/data/ultrachat/test_sft.jsonl
 

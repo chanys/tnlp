@@ -1,8 +1,8 @@
 task: dpo_ft
 
 model:
-    model_id: /home/chanys/tnlp/expts/ultrachat_merged_model
-    tokenizer_id: /home/chanys/tnlp/expts/ultrachat_sft
+    model_id: BASE_DIR/expts/ultrachat_merged_model
+    tokenizer_id: BASE_DIR/expts/ultrachat_sft
 
 hyperparams:
     per_device_eval_batch_size: 4
@@ -27,10 +27,10 @@ lora:
     task_type: CAUSAL_LM
 
 processing:
-    output_dir: /home/chanys/tnlp/expts/ultrafeedback_dpo
+    output_dir: BASE_DIR/expts/ultrafeedback_dpo
     seed: 42
 
 data:
-    train_jsonl: /home/chanys/tnlp/data/ultrafeedback/train_prefs.jsonl
-    validation_jsonl: /home/chanys/tnlp/data/ultrafeedback/test_prefs.jsonl
+    train_jsonl: BASE_DIR/data/ultrafeedback/train_prefs.jsonl
+    validation_jsonl: BASE_DIR/data/ultrafeedback/test_prefs.jsonl
 

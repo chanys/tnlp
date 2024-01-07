@@ -34,12 +34,12 @@ class RagDataset(Dataset):
             passage = datapoint["passage"]
             answer = datapoint["answer"]
 
-            query_tokenized = self.retriever_tokenizer(f"query: {query}", padding="max_length", max_length=self.config.hyperparams.query_max_seq_len, truncation=True)
-            passage_tokenized = self.retriever_tokenizer(f"passage: {passage}", padding="max_length", max_length=self.config.hyperparams.passage_max_seq_len, truncation=True)
+            query_tokenized = self.retriever_tokenizer(f"query: {query}", padding="max_length", max_length=self.config.hyperparams.max_query_len, truncation=True)
+            passage_tokenized = self.retriever_tokenizer(f"passage: {passage}", padding="max_length", max_length=self.config.hyperparams.max_passage_len, truncation=True)
 
             # Here, input = "query: <query> passage: <passage> answer: <answer>", output = "<answer>"
             qpa_text = f"query: {query} passage: {passage} answer: {answer}"
-            qpa_tokenized = self.generator_tokenizer(qpa_text, padding="max_length", max_length=self.config.hyperparams.generator_max_seq_len, truncation=True)
+            qpa_tokenized = self.generator_tokenizer(qpa_text, padding="max_length", max_length=self.config.hyperparams.max_generator_len, truncation=True)
 
             qp_text = f"query: {query} passage: {passage} answer:"
             qp_tokenized = self.generator_tokenizer(qp_text, padding=False)

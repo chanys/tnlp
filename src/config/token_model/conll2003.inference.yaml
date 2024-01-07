@@ -1,15 +1,15 @@
 task: token_classification
 
 model:
-    model_id: /home/chanys/tnlp/expts/conll2003_classification/final_model
-    tokenizer_id: /home/chanys/tnlp/expts/conll2003_classification/final_model
+    model_id: BASE_DIR/expts/conll2003_classification/final_model
+    tokenizer_id: BASE_DIR/expts/conll2003_classification/final_model
 
 hyperparams:
     batch_size: 16
 
 processing:
-    output_dir: /home/chanys/tnlp/expts/conll2003_classification
+    output_dir: BASE_DIR/expts/conll2003_classification
     seed: 42
 
 data:
-    inference_jsonl: /home/chanys/tnlp/data/conll2003/inference.jsonl
+    inference_jsonl: BASE_DIR/data/conll2003/inference.jsonl

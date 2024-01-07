@@ -26,8 +26,8 @@ lora:
     task_type: CAUSAL_LM
 
 processing:
-    output_dir: /home/chanys/tnlp/expts/alpaca_instruction_ft
+    output_dir: BASE_DIR/expts/alpaca_instruction_ft
     seed: 42
 
 data:
-    train_jsonl: /home/chanys/tnlp/data/alpaca/alpaca_data.json
+    train_jsonl: BASE_DIR/data/alpaca/alpaca_data.json

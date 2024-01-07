@@ -1,15 +1,5 @@
 from typing import List
 
-class DotDict(dict):
-    def __getattr__(self, attr):
-        value = self.get(attr)
-        if isinstance(value, dict):
-            return DotDict(value)
-        return value
-
-    __setattr__ = dict.__setitem__
-    __delattr__ = dict.__delitem__
-
 
 class Span():
     def __init__(self, text, token_start, token_end, char_start, char_end, label=None):

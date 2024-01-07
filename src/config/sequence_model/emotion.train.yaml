@@ -14,11 +14,11 @@ hyperparams:
     save_total_limit: 0
 
 processing:
-    output_dir: /home/chanys/tnlp/expts/emotion_classification
+    output_dir: BASE_DIR/expts/emotion_classification
     seed: 42
 
 data:
-    train_jsonl: /home/chanys/tnlp/data/emotion/train.jsonl
-    validation_jsonl: /home/chanys/tnlp/data/emotion/validation.jsonl
-    test_jsonl: /home/chanys/tnlp/data/emotion/test.jsonl
-    inference_jsonl: /home/chanys/tnlp/data/emotion/inference.jsonl
+    train_jsonl: BASE_DIR/data/emotion/train.jsonl
+    validation_jsonl: BASE_DIR/data/emotion/validation.jsonl
+    test_jsonl: BASE_DIR/data/emotion/test.jsonl
+    inference_jsonl: BASE_DIR/data/emotion/inference.jsonl

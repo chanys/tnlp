@@ -1,15 +1,15 @@
 task: sequence_classification
 
 model:
-    model_id: /home/chanys/tnlp/expts/emotion_classification/final_model
-    tokenizer_id: /home/chanys/tnlp/expts/emotion_classification/final_model
+    model_id: BASE_DIR/expts/emotion_classification/final_model
+    tokenizer_id: BASE_DIR/expts/emotion_classification/final_model
 
 hyperparams:
     batch_size: 16
 
 processing:
-    output_dir: /home/chanys/tnlp/expts/emotion_classification
+    output_dir: BASE_DIR/expts/emotion_classification
     seed: 42
 
 data:
-    test_jsonl: /home/chanys/tnlp/data/emotion/test.jsonl
+    test_jsonl: BASE_DIR/data/emotion/test.jsonl

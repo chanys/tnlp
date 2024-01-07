@@ -14,11 +14,11 @@ hyperparams:
     save_total_limit: 0
 
 processing:
-    output_dir: /home/chanys/tnlp/expts/conll2003_classification
+    output_dir: BASE_DIR/expts/conll2003_classification
     seed: 42
 
 data:
-    train_jsonl: /home/chanys/tnlp/data/conll2003/train.jsonl
-    validation_jsonl: /home/chanys/tnlp/data/conll2003/validation.jsonl
-    test_jsonl: /home/chanys/tnlp/data/conll2003/test.jsonl
-    inference_jsonl: /home/chanys/tnlp/data/conll2003/inference.jsonl
+    train_jsonl: BASE_DIR/data/conll2003/train.jsonl
+    validation_jsonl: BASE_DIR/data/conll2003/validation.jsonl
+    test_jsonl: BASE_DIR/data/conll2003/test.jsonl
+    inference_jsonl: BASE_DIR/data/conll2003/inference.jsonl

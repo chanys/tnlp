@@ -28,7 +28,7 @@ class CustomTripletContrastiveLearning(object):
         pass
 
     def train(self):
-        tokenizer = get_tokenizer(self.config.model.tokenizer_id, max_length=self.config.model.max_seq_length)
+        tokenizer = get_tokenizer(self.config.model.tokenizer_id, max_length=self.config.hyperparams.max_seq_length)
 
         ds_train = read_bioasq_as_triplet_examples_from_file(self.config.data.train_jsonl)
         logger.info("Triplet examples loaded")

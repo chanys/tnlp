@@ -3,7 +3,6 @@ task: triplet_contrastive_learning
 model:
     model_id: microsoft/deberta-v3-base
     tokenizer_id: microsoft/deberta-v3-base
-    max_seq_length: 128
 
 hyperparams:
     batch_size: 16
@@ -14,11 +13,12 @@ hyperparams:
     save_steps: 10000
     save_total_limit: 0
     temperature: 1.0
+    max_seq_length: 128
 
 processing:
-    output_dir: /home/chanys/tnlp/expts/bioasq_triplet_contrastive
+    output_dir: BASE_DIR/expts/bioasq_triplet_contrastive
     seed: 42
 
 data:
-    train_jsonl: /home/chanys/tnlp/data/bioasq/train.jsonl
-    validation_jsonl: /home/chanys/tnlp/data/bioasq/validation.jsonl
+    train_jsonl: BASE_DIR/data/bioasq/train.jsonl
+    validation_jsonl: BASE_DIR/data/bioasq/validation.jsonl

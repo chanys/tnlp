@@ -14,9 +14,9 @@ hyperparams:
     warmup_steps: 0
     save_steps: 10000
     save_total_limit: 0
-    query_max_seq_len: 32
-    passage_max_seq_len: 128
-    generator_max_seq_len: 192
+    max_query_len: 32
+    max_passage_len: 128
+    max_generator_len: 192
     temperature: 1.0
 
 lora:
@@ -28,10 +28,10 @@ lora:
     task_type: CAUSAL_LM
 
 processing:
-    retriever_output_dir: /home/chanys/tnlp/expts/squad_rag_e2e/retriever
-    generator_output_dir: /home/chanys/tnlp/expts/squad_rag_e2e/generator
+    retriever_output_dir: BASE_DIR/expts/squad_rag_e2e/retriever
+    generator_output_dir: BASE_DIR/expts/squad_rag_e2e/generator
     seed: 42
 
 data:
-    train_jsonl: /home/chanys/tnlp/data/squad/train.jsonl
+    train_jsonl: BASE_DIR/data/squad/train.jsonl
 

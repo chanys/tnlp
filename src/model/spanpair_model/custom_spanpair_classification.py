@@ -120,12 +120,12 @@ class CustomSpanPairClassification(object):
         print(f1_scores)
 
     def test(self):
-        tokenizer = get_tokenizer(self.config.model.tokenizer_id, max_length=self.config.model.max_seq_length)
+        tokenizer = get_tokenizer(self.config.model.tokenizer_id, max_length=self.config.hyperparams.max_seq_length)
 
         ds = read_nyth_relation_examples_from_file(self.config.data.test_jsonl)
 
         ds_tokenized = ds.map(tokenize, batched=True, batch_size=None,
-                              fn_kwargs={"tokenizer": tokenizer, "max_seq_length": self.config.model.max_seq_length})
+                              fn_kwargs={"tokenizer": tokenizer, "max_seq_length": self.config.hyperparams.max_seq_length})
         ds_tokenized = ds_tokenized.filter(lambda example: example["use_instance"] == True)
 
         dataloader = DataLoader(ds_tokenized, batch_size=self.config.hyperparams.batch_size, shuffle=True,
@@ -137,11 +137,11 @@ class CustomSpanPairClassification(object):
         self.score_examples(model, dataloader, index2label)
 
     def train(self):
-        tokenizer = get_tokenizer(self.config.model.tokenizer_id, max_length=self.config.model.max_seq_length)
+        tokenizer = get_tokenizer(self.config.model.tokenizer_id, max_length=self.config.hyperparams.max_seq_length)
 
         ds_train = read_nyth_relation_examples_from_file(self.config.data.train_jsonl)
         ds_train_tokenized = ds_train.map(tokenize, batched=True, batch_size=None, fn_kwargs={"tokenizer": tokenizer,
-                                                                                              "max_seq_length": self.config.model.max_seq_length})
+                                                                                              "max_seq_length": self.config.hyperparams.max_seq_length})
         logger.info(f"len(ds_train_tokenized)={len(ds_train_tokenized)}")
 
         ds_train_tokenized = ds_train_tokenized.filter(lambda example: example["use_instance"] == True)
@@ -159,7 +159,7 @@ class CustomSpanPairClassification(object):
         ds_validation = read_nyth_relation_examples_from_file(self.config.data.validation_jsonl)
         ds_validation_tokenized = ds_validation.map(tokenize, batched=True, batch_size=None,
                                                     fn_kwargs={"tokenizer": tokenizer,
-                                                               "max_seq_length": self.config.model.max_seq_length})
+                                                               "max_seq_length": self.config.hyperparams.max_seq_length})
 
         logger.info(f"len(ds_validation_tokenized)={len(ds_validation_tokenized)}")
         ds_validation_tokenized = ds_validation_tokenized.filter(lambda example: example["use_instance"] == True)

@@ -1,21 +1,18 @@
 import os
 import argparse
-import yaml
 
-from src.scripts.common_utils import DotDict
+from src.config.core import create_and_validate_config
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--params", required=True)
+    parser.add_argument("--config", required=True)
     parser.add_argument("--mode", required=True)
     args = parser.parse_args()
 
     os.environ["WANDB_DISABLED"] = "true"
 
-    with open(args.params, "r") as f:
-        config_data = yaml.safe_load(f)
-    config = DotDict(config_data)
+    config = create_and_validate_config(args.config)
 
     task = None
     if config.task == "sequence_classification":

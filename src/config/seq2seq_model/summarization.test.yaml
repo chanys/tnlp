@@ -1,8 +1,8 @@
 task: seq2seq_lm
 
 model:
-    model_id: /home/chanys/tnlp/expts/samsum_summarization/final_model
-    tokenizer_id: /home/chanys/tnlp/expts/samsum_summarization/final_model
+    model_id: BASE_DIR/expts/samsum_summarization/final_model
+    tokenizer_id: BASE_DIR/expts/samsum_summarization/final_model
 
 hyperparams:
     batch_size: 16
@@ -13,7 +13,7 @@ processing:
     seed: 42
 
 data:
-    test_jsonl: /home/chanys/tnlp/data/samsum/test.jsonl
+    test_jsonl: BASE_DIR/data/samsum/test.jsonl
 
 prompt:
     context_prompt: "summarize: {}"

@@ -1,8 +1,8 @@
 task: seq2seq_ner
 
 model:
-    model_id: /home/chanys/tnlp/expts/conll2003_seq2seq/final_model
-    tokenizer_id: /home/chanys/tnlp/expts/conll2003_seq2seq/final_model
+    model_id: BASE_DIR/expts/conll2003_seq2seq/final_model
+    tokenizer_id: BASE_DIR/expts/conll2003_seq2seq/final_model
 
 hyperparams:
     batch_size: 128
@@ -10,11 +10,11 @@ hyperparams:
     max_response_length: 128
 
 processing:
-    output_dir: /home/chanys/tnlp/expts/conll2003_seq2seq
+    output_dir: BASE_DIR/expts/conll2003_seq2seq
     seed: 42
 
 data:
-    test_jsonl: /home/chanys/tnlp/data/conll2003/test.jsonl
+    test_jsonl: BASE_DIR/data/conll2003/test.jsonl
 
 prompt:
     context_prompt: "{}"
