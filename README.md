@@ -1,7 +1,7 @@
 
 # TNLP: Transformer for Natural Language Processing
 
-This is the code repo for the TNLP project, by [Yee Seng Chan](https://chanys.github.io/about/). 
+This is the code repo for the TNLP project, by [Yee Seng Chan](https://chanys.github.io/about/). The code in this repo leverages BERT, T5, LLaMA, Mistral, etc. for various tasks such as classification, contrastive modeling, information extraction, seq2seq generation, instruction fine-tuning, direct perference optimization, RAG, etc. Besides leveraging the Hugging Face API, this repo also contains customized code for certain tasks such as span-pair classification, end-to-end RAG for fine-tuning of the retriever and generator, etc.
 
 This repo contains code to perform the following NLP tasks:
 * Sequence classification: assigns a label to a text.
